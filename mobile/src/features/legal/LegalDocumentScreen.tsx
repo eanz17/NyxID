@@ -16,10 +16,12 @@ import { spacing, typeScale } from "../../theme/designTokens";
  * markdown from the frontend deploy. Same .md files used by the web
  * dashboard, so both surfaces always show the same text.
  *
- * Source of truth: frontend/public/legal/{privacy,terms}.md
- * Served at: <LEGAL_BASE_URL>/legal/<doc>.md
+ * Each doc is configured with its own full URL via env:
+ *   PROD_PRIVACY_URL=https://nyx.chrono-ai.fun/legal/privacy.md
+ *   PROD_TERMS_URL=https://nyx.chrono-ai.fun/legal/terms.md
  *
- * `LEGAL_BASE_URL` is per-profile (DEV_/PROD_) in mobile/.env.*.
+ * Where mobile fetches them from is fully decoupled from the FE's
+ * internal path layout — OSS forks can host the MD anywhere.
  */
 type Props = {
   title: string;
@@ -40,9 +42,10 @@ function stripFrontMatter(md: string): { content: string; effectiveDate: string 
 
 function resolveDocUrl(docKey: "privacy" | "terms"): string | null {
   const extra = (Constants.expoConfig?.extra ?? {}) as Record<string, unknown>;
-  const baseUrl = typeof extra.LEGAL_BASE_URL === "string" ? extra.LEGAL_BASE_URL.replace(/\/$/, "") : "";
-  if (!baseUrl) return null;
-  return `${baseUrl}/legal/${docKey}.md`;
+  const key = docKey === "privacy" ? "PRIVACY_URL" : "TERMS_URL";
+  const raw = extra[key];
+  const url = typeof raw === "string" ? raw.trim() : "";
+  return url || null;
 }
 
 export function LegalDocumentScreen({ title, docKey, telemetryBackTarget, onBack }: Props) {
@@ -58,7 +61,8 @@ export function LegalDocumentScreen({ title, docKey, telemetryBackTarget, onBack
 
   useEffect(() => {
     if (!url) {
-      setError("Legal document URL is not configured (LEGAL_BASE_URL).");
+      const envKey = docKey === "privacy" ? "PRIVACY_URL" : "TERMS_URL";
+      setError(`${envKey} is not configured. Set DEV_${envKey} and/or PROD_${envKey} in mobile/.env.*.`);
       return;
     }
     let cancelled = false;

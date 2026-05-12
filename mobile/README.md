@@ -65,7 +65,8 @@ Each field falls back to the other profile if its primary is empty. Both empty f
 | `*_ANDROID_VERSION_CODE` | for release builds | Android `versionCode` — bump per release |
 | `*_UNIVERSAL_LINK_HOST` | optional | iOS `associatedDomains` + Android intent filter |
 | `*_UNIVERSAL_LINK_PATH_PREFIX` | optional | Android intent-filter path |
-| `*_LEGAL_BASE_URL` | for Privacy / Terms screens | Origin serving `/legal/{privacy,terms}.md` — same files the web dashboard renders. Empty = legal screens show an error. |
+| `*_PRIVACY_URL` | for Privacy screen | Full URL to the privacy markdown (e.g. `https://nyx.chrono-ai.fun/legal/privacy.md`). Empty = screen shows an error. |
+| `*_TERMS_URL` | for Terms screen | Full URL to the terms markdown. Empty = screen shows an error. |
 | `*_ALLOWED_EMAILS` | optional | Comma-separated allowlist; empty = allow all signed-in users |
 | `*_TELEMETRY_DSN` / `*_TELEMETRY_HOST` / `*_SHARE_ANALYTICS` | optional | PostHog |
 
@@ -232,7 +233,7 @@ The build scripts only remove old artifacts (`.ipa`, `.xcarchive`) per run and l
 
 Privacy Policy and Terms of Service are **markdown files served by the frontend** (`frontend/public/legal/privacy.md`, `frontend/public/legal/terms.md`). Both the web dashboard and the mobile app render the same source — edit once, both surfaces update on next visit (web) / next launch (mobile).
 
-Mobile fetches them at runtime from `${LEGAL_BASE_URL}/legal/{privacy,terms}.md` and renders with `react-native-markdown-display`, styled to match the mobile theme. Web fetches from the same `/legal/*.md` path and renders with `react-markdown` + `remark-gfm`.
+Mobile fetches them at runtime from the full URLs configured via `*_PRIVACY_URL` and `*_TERMS_URL` env vars, and renders with `react-native-markdown-display`, styled to match the mobile theme. Web fetches from the same `/legal/*.md` path (relative to its origin) and renders with `react-markdown` + `remark-gfm`.
 
 To update the text:
 
@@ -242,7 +243,7 @@ To update the text:
 
 No mobile rebuild required — the next time someone opens the screen, they get the new text.
 
-OSS forks: set `*_LEGAL_BASE_URL` in your `.env.*` to your own deploy origin (or a different host hosting the same `/legal/*.md` files).
+OSS forks: set `*_PRIVACY_URL` and `*_TERMS_URL` in your `.env.*` to wherever you host the two markdown files. They can be on the same origin, on a CDN, on separate hosts — the mobile app just fetches the URL.
 
 ## Architecture
 

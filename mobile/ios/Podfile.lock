@@ -231,6 +231,8 @@ PODS:
     - ExpoModulesCore
   - ExpoSecureStore (55.0.12):
     - ExpoModulesCore
+  - ExpoSplashScreen (55.0.20):
+    - ExpoModulesCore
   - ExpoTaskManager (55.0.13):
     - ExpoModulesCore
     - UMAppLoader
@@ -2110,6 +2112,28 @@ PODS:
     - React-utils (= 0.83.4)
     - ReactNativeDependencies
   - ReactNativeDependencies (0.83.4)
+  - RNCAsyncStorage (2.2.0):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - RNGestureHandler (2.30.1):
     - hermes-engine
     - RCTRequired
@@ -2395,6 +2419,7 @@ DEPENDENCIES:
   - ExpoModulesJSI (from `../node_modules/expo-modules-core`)
   - ExpoNotifications (from `../node_modules/expo-notifications/ios`)
   - ExpoSecureStore (from `../node_modules/expo-secure-store/ios`)
+  - ExpoSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - ExpoTaskManager (from `../node_modules/expo-task-manager/ios`)
   - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
   - EXUpdatesInterface (from `../node_modules/expo-updates-interface/ios`)
@@ -2473,6 +2498,7 @@ DEPENDENCIES:
   - ReactCodegen (from `build/generated/ios/ReactCodegen`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeDependencies (from `../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec`)
+  - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -2526,6 +2552,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-notifications/ios"
   ExpoSecureStore:
     :path: "../node_modules/expo-secure-store/ios"
+  ExpoSplashScreen:
+    :path: "../node_modules/expo-splash-screen/ios"
   ExpoTaskManager:
     :path: "../node_modules/expo-task-manager/ios"
   ExpoWebBrowser:
@@ -2681,6 +2709,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   ReactNativeDependencies:
     :podspec: "../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec"
+  RNCAsyncStorage:
+    :path: "../node_modules/@react-native-async-storage/async-storage"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -2719,11 +2749,12 @@ SPEC CHECKSUMS:
   ExpoModulesJSI: 0dcd06b8d4b92826d30f52947a03a78f7590b604
   ExpoNotifications: 1d552063bcd769c237c73dfada0abecdef097620
   ExpoSecureStore: f5fb965b5aca826e86473bf738948ab50cca66cd
+  ExpoSplashScreen: 3e64eed7a300d4e1131e8b419b5cea6e604adba7
   ExpoTaskManager: 563a5b3625ceea4957221b531aa11ff8300842e0
   ExpoWebBrowser: f81f8e35afd7f61ec809622ef354c579a3b580e2
   EXUpdatesInterface: 39d05400a9226c438565dbaaa8447b5f0672ba45
   FBLazyVector: 061f518bbd81677ed8a8317e2ae60b8779495808
-  hermes-engine: c73f03d747e7e3c184441977a3c3c3b9ada5e56d
+  hermes-engine: e8e81b29d6705ae0881e9d40fb0eaa50c28b66d4
   RCTDeprecation: 5045f20b2cc1239bf422764004338c720684a22f
   RCTRequired: b6b9724225dd780ac2989d2e575d5513c50fe04b
   RCTSwiftUI: 395b65655229fa2006415207adcfcb6e35dc78ed
@@ -2732,7 +2763,7 @@ SPEC CHECKSUMS:
   React: 3e14066ac707b3e369d09e2e923d8bee7f8c33ff
   React-callinvoker: bd7959a24564feaf5e4c8c11789e64884da13482
   React-Core: f060f4e14e9301685ce63ea65fbe903bf3397e45
-  React-Core-prebuilt: ba063f9d3aba4fda771a7f095837f4e6e17262ed
+  React-Core-prebuilt: 6f494c5c387c2e58243084759bc0edf046324a95
   React-CoreModules: 89a1a544297be88ca4cdff317423f9e0d0c192a4
   React-cxxreact: 81b1bfa305b1b759cc0fe18327644816216e5993
   React-debug: 234fddb309822e13b9b442ef1bdca8d2b8c3cbf2
@@ -2795,7 +2826,8 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: 2b19d66e5ddfe8dc7afb6338a4626156cbf2bab1
   ReactCodegen: 43f0948182edee9407c7b977fb059455dfeb9361
   ReactCommon: c6e81cc1ae185fa84863f3ea1d58caac4be741d7
-  ReactNativeDependencies: 2dd62cc73e81062d0c3e7a7965f1af038c4bdc80
+  ReactNativeDependencies: 8ed64872c0415e499ce787a71e918837cb759f98
+  RNCAsyncStorage: 3a4f5e2777dae1688b781a487923a08569e27fe4
   RNGestureHandler: 0ea8153746a92b3744d4eaadade647debedf646e
   RNReanimated: 86e5991396f1aa514db90d6c79d4c3e37a37bb10
   RNScreens: 14243fa0d9842ffa7f8bb2d00b6c3cfd3ca817e8

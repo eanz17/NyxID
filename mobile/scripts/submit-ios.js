@@ -90,14 +90,48 @@ const cmd = [
 console.log(`\n[submit-ios] Uploading ${path.basename(ipaPath)} to App Store Connect...`);
 console.log(`$ ${cmd}\n`);
 
+// altool sometimes exits 0 even when it printed auth errors (e.g.
+// 401 NOT_AUTHORIZED from ASC). We can't trust the exit code alone —
+// capture stdout/stderr and scan for known failure patterns before
+// declaring success. Trade-off: no live upload progress (output prints
+// after altool returns), but no more false-positive ✓ messages.
+let exitCode = 0;
+let captured = "";
 try {
-  execSync(cmd, { stdio: "inherit", cwd: MOBILE_ROOT });
+  captured = execSync(cmd, {
+    cwd: MOBILE_ROOT,
+    encoding: "utf8",
+    stdio: ["inherit", "pipe", "pipe"],
+    maxBuffer: 64 * 1024 * 1024,
+  });
 } catch (e) {
-  console.error("[submit-ios] altool exited non-zero. Common causes:");
-  console.error("  - Build number ≤ last accepted (bump *_IOS_BUILD_NUMBER and rebuild)");
-  console.error("  - Bundle ID mismatch with the ASC app");
-  console.error("  - .p8 / Issuer ID / Key ID mismatch");
-  process.exit(e.status || 1);
+  exitCode = e.status || 1;
+  captured = (e.stdout?.toString?.() ?? "") + (e.stderr?.toString?.() ?? "");
+}
+
+process.stdout.write(captured);
+
+const AUTH_FAIL = /(?:status code 401|NOT_AUTHORIZED|Unable to authenticate|Failed to authenticate)/i;
+const ANY_ERROR = /^.*ERROR:\s/m;
+const authFailed = AUTH_FAIL.test(captured);
+const otherError = ANY_ERROR.test(captured);
+
+if (exitCode !== 0 || authFailed || otherError) {
+  console.error(`\n[submit-ios] ✗ altool reported errors — upload did NOT succeed.`);
+  if (authFailed) {
+    console.error("\nAuthentication failed. Most common causes:");
+    console.error("  - API key was revoked in App Store Connect");
+    console.error("  - The .p8 file content doesn't match the configured Key ID");
+    console.error("  - ASC_API_KEY_ISSUER_ID is wrong");
+    console.error("  - Key role is too restrictive (need App Manager or Developer)");
+    console.error("\nVerify at: ASC → Users and Access → Integrations → App Store Connect API");
+  } else {
+    console.error("\nCommon causes:");
+    console.error("  - Build number ≤ last accepted (bump *_IOS_BUILD_NUMBER and rebuild)");
+    console.error("  - Bundle ID mismatch with the ASC app");
+    console.error("  - Network / Apple service issue (retry)");
+  }
+  process.exit(exitCode || 1);
 }
 
 console.log(`\n[submit-ios] ✓ uploaded — check App Store Connect → TestFlight in a few minutes.`);

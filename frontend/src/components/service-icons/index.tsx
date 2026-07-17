@@ -45,6 +45,7 @@ import ApiLarkBotIcon from "./api-lark-bot";
 import ApiFeishuIcon from "./api-feishu";
 import ApiFeishuBotIcon from "./api-feishu-bot";
 import ApiTelegramBotIcon from "./api-telegram-bot";
+import ApiSupabaseIcon from "./api-supabase";
 
 import AwsCostExplorerIcon from "./aws-cost-explorer";
 
@@ -52,8 +53,8 @@ export type ServiceIconProps = { className?: string };
 
 export type IconComponent = ComponentType<ServiceIconProps>;
 
-// The 29 slugs seeded in `backend/src/services/provider_service.rs`
-// (lines ~1818-2218) — authoritative the test setup asserts against.
+// Catalog slugs with dedicated brand icons. The dialog test renders every
+// entry in this list and rejects fallback icons.
 export const SPEC_CATALOG_SLUGS = [
   "llm-openai",
   "llm-openai-codex",
@@ -84,6 +85,7 @@ export const SPEC_CATALOG_SLUGS = [
   "api-feishu",
   "api-feishu-bot",
   "api-telegram-bot",
+  "api-supabase",
 
   "aws-cost-explorer",
 ] as const;
@@ -120,6 +122,7 @@ export const SERVICE_ICONS: Readonly<Record<string, IconComponent>> = {
   "api-feishu": ApiFeishuIcon,
   "api-feishu-bot": ApiFeishuBotIcon,
   "api-telegram-bot": ApiTelegramBotIcon,
+  "api-supabase": ApiSupabaseIcon,
 
   "aws-cost-explorer": AwsCostExplorerIcon,
 } satisfies Readonly<Record<Slug, IconComponent>>;
